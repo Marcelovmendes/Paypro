@@ -23,6 +23,13 @@ public class GlobalHandleExeption {
                 .body(e.getMessage());
     }
 
+    @ExceptionHandler({ UnauthorizedTransactionException.class })
+    public ResponseEntity<Object> handleUnauthorizedTransaction(UnauthorizedTransactionException e) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(e.getMessage());
+    }
+
     @ExceptionHandler({ Exception.class })
     public ResponseEntity<Object> handleException(Exception e) {
         return ResponseEntity

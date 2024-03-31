@@ -1,7 +1,6 @@
-package br.com.marcelovmendes.paybackend.notifications;
+package br.com.marcelovmendes.paybackend.model;
 
 public record Notification(
-    boolean message
-) {
-    
+        boolean message) {
+
 }

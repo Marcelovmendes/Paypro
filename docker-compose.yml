@@ -1,0 +1,33 @@
+version: "3.5"
+services:
+  web:
+  build: .
+  ports:
+    - "8180:8080"
+  networks:
+    - default
+  depends_on:
+    - db
+  environment:
+    - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/paypro
+    - SPRING_DATASOURCE_USERNAME=postgres
+    - SPRING_DATASOURCE_PASSWORD=driven
+
+  db:
+    image: postgres:alpine
+    hostname: db
+    ports:
+      - "5433:5432"
+    networks:
+      - default
+    environment:
+      - POSTGRES_DB=paypro
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=driven
+    volumes:
+      - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+networks:
+  default:
+    external:
+      name: bridge

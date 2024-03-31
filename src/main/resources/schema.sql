@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS "wallets"(
     "password" VARCHAR(100) NOT NULL,"type" INT ,
     "balance" DECIMAL(10,2)
 );
-CREATE UNIQUE INDEX IF NOT EXISTS 'cpf_unique' ON 'wallets'('cpf');
-CREATE UNIQUE INDEX IF NOT EXISTS 'email_unique' ON 'wallets'('email');
+CREATE UNIQUE INDEX IF NOT EXISTS cpfIdx ON "wallets"("cpf");
+CREATE UNIQUE INDEX IF NOT EXISTS emailIndx ON "wallets"("email");
 
 CREATE TABLE IF NOT EXISTS "transactions"(
     ID SERIAL PRIMARY KEY, "payer" INT, "payee" INT, 
