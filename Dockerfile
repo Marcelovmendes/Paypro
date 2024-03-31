@@ -2,6 +2,6 @@ FROM openjdk:21
 
 WORKDIR /app
 
-COPY target/*.jar app/paybackend.jar
+COPY target/pay-backend-0.0.1-SNAPSHOT.jar .
 
-CMD ["java", "-jar", "app/paybackend.jar"]
+CMD ["java", "-jar", "pay-backend-0.0.1-SNAPSHOT.jar"]

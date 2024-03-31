@@ -1,17 +1,16 @@
 version: "3.5"
 services:
-  web:
-  build: .
-  ports:
-    - "8180:8080"
-  networks:
-    - default
-  depends_on:
-    - db
-  environment:
-    - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/paypro
-    - SPRING_DATASOURCE_USERNAME=postgres
-    - SPRING_DATASOURCE_PASSWORD=driven
+  api:
+    image: marcelocortess/paybackend:latest
+    hostname: api
+    ports:
+      - "8180:8080"
+    networks:
+      - paypro-network
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/paypro
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=driven
 
   db:
     image: postgres:alpine
@@ -19,7 +18,7 @@ services:
     ports:
       - "5433:5432"
     networks:
-      - default
+      - paypro-network
     environment:
       - POSTGRES_DB=paypro
       - POSTGRES_USER=postgres
@@ -28,6 +27,5 @@ services:
       - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
 
 networks:
-  default:
-    external:
-      name: bridge
+  paypro-network:
+    driver: bridge
