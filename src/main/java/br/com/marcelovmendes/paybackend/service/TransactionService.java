@@ -2,6 +2,8 @@ package br.com.marcelovmendes.paybackend.service;
 
 import org.springframework.stereotype.Service;
 
+import br.com.marcelovmendes.paybackend.exception.InvalidTransactionExeption;
+import br.com.marcelovmendes.paybackend.exception.NotfoundUserException;
 import br.com.marcelovmendes.paybackend.model.Transaction;
 import br.com.marcelovmendes.paybackend.repository.TransactionRepository;
 import br.com.marcelovmendes.paybackend.repository.WalletRepository;
@@ -19,28 +21,32 @@ public class TransactionService {
 
     public Transaction create(Transaction transaction) {
 
-        validate(transaction);
+        validateTransaction(transaction);
 
         var newTransaction = transactionRepository.save(transaction);
 
         var wallet = walletRepository.findById(transaction.payer()).get();
-
         walletRepository.save(wallet.debit(transaction.value()));
+
+        // authorize notification
+
         return newTransaction;
     }
 
-    private void validate(Transaction transaction) {
-        if (transaction.payer().equals(transaction.payee())) {
-            throw new IllegalArgumentException("Payer and payee must be different");
-        }
-        var payer = walletRepository.findById(transaction.payer()).get();
+    private void validateTransaction(Transaction transaction) {
+        var payer = walletRepository.findById(transaction.payer())
+                .orElseThrow(() -> new NotfoundUserException("Payer not found: " + transaction.payer()));
+        var payee = walletRepository.findById(transaction.payee())
+                .orElseThrow(() -> new NotfoundUserException("Payee not found: " + transaction.payee()));
+
         if (payer.balance().compareTo(transaction.value()) < 0) {
-            throw new IllegalArgumentException("Insufficient balance");
+            throw new InvalidTransactionExeption("Insufficient balance - %s".formatted(payer.balance()));
         }
-
-        if (payer.type() == 2) {
-            throw new IllegalArgumentException("Payer is a shopkeeper");
-
+        if (payer.type() != 1) {
+            throw new InvalidTransactionExeption("Payer is not a store - %s".formatted(payer.type()));
+        }
+        if (payer.id().equals(payee.id())) {
+            throw new InvalidTransactionExeption("Payer and payee are the same");
         }
     }
 }
