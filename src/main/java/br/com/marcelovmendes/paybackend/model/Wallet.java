@@ -1,9 +1,12 @@
-package br.com.marcelovmendes.paybackend.wallet;
+package br.com.marcelovmendes.paybackend.model;
+
+import java.math.BigDecimal;
 
 import org.springframework.data.annotation.Id;
 
 public record Wallet(
-    @Id Long id,
+    @Id 
+    Long id,
     String fullname,
     Long cpf,
     String email,
